@@ -10,7 +10,7 @@ function GetA4({ image }) {
   <html lang="en">
   <head>
       <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.8, user-scalable=no">
       <title>Document</title>
       <script async src="https://docs.opencv.org/master/opencv.js" onload="onOpenCvReady();" type="text/javascript"></script>
       <style>
@@ -22,12 +22,14 @@ function GetA4({ image }) {
               height: 100px;
               width: 50%;
           }
+          #canvas {
+            margin-top: 100px;
+          }
       </style>
   </head>
   
   <body>
       <canvas id="canvas"></canvas>
-      <canvas id="canvas2"></canvas>
   
   <script>
   width = 380;
