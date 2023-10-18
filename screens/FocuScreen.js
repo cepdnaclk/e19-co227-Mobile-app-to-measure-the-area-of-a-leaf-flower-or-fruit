@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { View, StyleSheet } from "react-native";
 import { Slider } from "@miblanchard/react-native-slider";
@@ -12,7 +12,46 @@ import { customStyles4 } from "./styles/styles";
 import VectorButton from "../components/VectorButton";
 import GetArea from "../components/GetArea";
 
-function FocuScreen(props) {
+import { SomeFunction } from "../BackgroundScripts/SomeFunction"; // Import the function
+import { AddData } from "../BackgroundScripts/AddData"; // Import the function
+
+function FocuScreen({ navigation }) {
+  const [focusValue, setFocusValue] = useState(0);
+
+  const id = "-NgxNUSg4jhQHQx8tp7L";
+  const email = "kk@gmail.com";
+  const area = "23.45 cm ";
+  const name = "Bamboosa a";
+  const location = { latitude: 12.34, longitude: 23.4 };
+
+  const item2 = {
+    id: id,
+    email: email,
+    area: area,
+    name: name,
+    location: location,
+  };
+
+  const pressMore = () => {
+    navigation.navigate("ReportScreen", { item2: item2 });
+  };
+
+  const pressBack = () => {
+    navigation.navigate("ProecessImageScreen");
+  };
+
+  const incrementFocus = () => {
+    if (focusValue < 255) {
+      setFocusValue(Math.min(255, Math.round(focusValue + 1)));
+    }
+  };
+
+  const decrementFocus = () => {
+    if (focusValue > 0) {
+      setFocusValue(Math.min(255, Math.round(focusValue - 1)));
+    }
+  };
+
   return (
     <Screen color={colors.color3}>
       <View style={styles.container}>
@@ -20,7 +59,7 @@ function FocuScreen(props) {
           <ImageButton
             image={require("../assets/back-to.png")}
             size={42}
-            onPress={() => console.log("go back")}
+            onPress={() => pressBack()}
           ></ImageButton>
           <View style={styles.area}>
             <AppText>Area</AppText>
@@ -30,12 +69,12 @@ function FocuScreen(props) {
           <AppButton
             title={"More"}
             style={{ paddingHorizontal: 20, marginLeft: 10 }}
-            onPress={() => console.log("go to more")}
+            onPress={() => pressMore()}
           ></AppButton>
         </View>
-        <View style={styles.middleContainer}>  
-            {/*get area <GetArea {focus}/> comes here use usesatate for synchronizing*/}
-            <GetArea focus={100}/>
+        <View style={styles.middleContainer}>
+          {/*get area <GetArea {focus}/> comes here use usesatate for synchronizing*/}
+          <GetArea focus={100} />
         </View>
         <View style={styles.downContainer}>
           <AppText>Adjust to focus</AppText>
@@ -46,15 +85,28 @@ function FocuScreen(props) {
               minimumTrackTintColor="#107500"
               thumbStyle={customStyles4.thumb}
               trackStyle={customStyles4.track}
+              value={focusValue}
+              minimumValue={0}
+              maximumValue={255}
+              onValueChange={(value) => setFocusValue(Math.round(value))}
+              onSlidingComplete={(value) => setFocusValue(Math.round(value))}
             ></Slider>
           </View>
 
           <View style={styles.buttonView}>
-            <VectorButton name="minus-box" size={40}></VectorButton>
+            <VectorButton
+              name="minus-box"
+              size={40}
+              onPress={decrementFocus}
+            ></VectorButton>
             <View style={styles.foucusValue}>
-              <AppText style={{ paddingHorizontal: 5 }}>97</AppText>
+              <AppText style={{ paddingHorizontal: 5 }}>{focusValue}</AppText>
             </View>
-            <VectorButton name="plus-box" size={40}></VectorButton>
+            <VectorButton
+              name="plus-box"
+              size={40}
+              onPress={incrementFocus}
+            ></VectorButton>
           </View>
         </View>
       </View>

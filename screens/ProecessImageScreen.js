@@ -1,23 +1,45 @@
-import React from "react";
+import React from 'react';
+import { View, StyleSheet, ImageBackground } from 'react-native';
+import Screen from './Screen';
+import colors from '../config/colors';
+import VectorTextBtn from '../components/VectorTextBtn';
+import { firebase } from '../config';
 
-import { View, StyleSheet } from "react-native";
+function ProecessImageScreen({ route, navigation }) {
+  const { savedImage } = route.params;
+  const currentUser = firebase.auth().currentUser;
 
-import Screen from "./Screen";
-import colors from "../config/colors";
-import VectorTextBtn from "../components/VectorTextBtn";
+  const uploadImageToFirebase = async (imageUri) => {
+    try {
+      const userCollection = firebase.firestore().collection('users');
+      const userDoc = userCollection.doc(currentUser.uid);
 
-function ProecessImageScreen(props) {
+      await userDoc.update({
+        imageUrl: imageUri,
+      });
+
+      console.log('Image URL updated in Firestore:', imageUri);
+    } catch (error) {
+      console.error('Error updating image URL in Firestore:', error);
+    }
+  }
+
   return (
     <Screen color={colors.color4}>
       <View style={styles.container}>
-        <View style={styles.imgContainer}></View>
+        <ImageBackground
+          source={{ uri: savedImage }}
+          style={styles.imgContainer}
+          resizeMode="contain" // This ensures that the image is displayed at its original size
+        />
       </View>
       <View style={styles.downPart}>
         <VectorTextBtn
-          name="reload"
+          name="camera-retake"
           size={40}
-          title="Retake"
+          title="camera-retake"
           textStyle={{ fontSize: 8, paddingVertical: 0 }}
+          onPress={() => navigation.navigate('CameraScreen')}
         />
         <VectorTextBtn
           name="rotate-right"
@@ -32,10 +54,14 @@ function ProecessImageScreen(props) {
           textStyle={{ fontSize: 8, paddingVertical: 0 }}
         />
         <VectorTextBtn
-          name="page-next-outline"
+          name="page-next"
           size={40}
           title="Next"
           textStyle={{ fontSize: 8, paddingVertical: 0 }}
+          onPress={() => {
+            uploadImageToFirebase(savedImage);
+            // Additional navigation logic here
+          }}
         />
       </View>
     </Screen>
@@ -51,16 +77,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.color3,
   },
-
-  btn: {
-    padding: 10,
-    borderRadius: 15,
-  },
-
   downPart: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
     flex: 0.15,
     paddingHorizontal: 10,
   },

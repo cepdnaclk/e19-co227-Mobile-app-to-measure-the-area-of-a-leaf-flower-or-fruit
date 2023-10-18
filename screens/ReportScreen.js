@@ -9,9 +9,6 @@ import {
   ActivityIndicator,
 } from "react-native";
 
-import { db } from "../config";
-import { ref, get, child } from "firebase/database";
-
 // for pdf
 import { printToFileAsync } from "expo-print";
 import { shareAsync } from "expo-sharing";
@@ -25,15 +22,21 @@ import ImageButton from "../components/ImageButton";
 import AppText from "../components/AppText";
 import colors from "../config/colors";
 
-function ReportScreen(props) {
+import { AddData } from "../BackgroundScripts/AddData";
+
+function ReportScreen({ navigation, route }) {
+  // navigation
+
+  const pressGoBack = () => {
+    navigation.goBack();
+  };
+
   // for pdf
 
-  let logoImagePath = logo_black;
+  let logoImagePath = logo_black; //  images for html document
   let qrImage = qrImge1;
 
   let report_id = "ABC-2344";
-  let name = "Bamboosa aridinarifolia";
-  let area = "23.45 cm ";
 
   let html = `<!DOCTYPE html>
   <html>
@@ -84,8 +87,8 @@ function ReportScreen(props) {
 
           <p class="info">Report Information:</p>
           <p class="data"><strong>Report ID:</strong> ${report_id}</p>
-          <p class="data"><strong>Name:</strong> ${name}</p>
-          <p class="data"><strong>Area of Leaf:</strong> ${area}</p>
+
+          <p class="data"><strong>Area of Leaf:</strong> ${34.2}</p>
           <p class="data"><strong>Longitude:</strong> ${"53.44"}</p>
           <p class="data"><strong>Latitude:</strong> ${"78.30"}</p>
          
@@ -109,30 +112,34 @@ function ReportScreen(props) {
     await shareAsync(file.uri);
   };
 
+  //update the report
+  const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  specificId = "-NfuNe5HVzcnQOdBQ7Dw"; //  form clicked flat list item.
-  // or get from the add data screen before adding
-
-  const postsRef0 = ref(db, "data");
-  const postsRef = child(postsRef0, specificId);
-
-  const [data, setData] = useState("");
-
-  // fetch dta from firebase
+  // if came from history
   useEffect(() => {
-    get(postsRef)
-      .then((snapshot) => {
-        const fetchedData = snapshot.val();
-        setData(fetchedData);
-        console.log(fetchedData);
-        setIsLoading(false);
-      })
+    if (route.params && route.params.item) {
+      const data1 = route.params.item;
+      setIsLoading(false);
+      setData(data1);
+    }
+  }, [route.params]);
 
-      .catch((error) => {
-        console.error("Error" + error);
-      });
-  }, []);
+  // if came from normal process screen.
+  useEffect(() => {
+    if (route.params && route.params.item2) {
+      const data2 = route.params.item2;
+      setData(data2);
+      AddData(
+        data2.email,
+        data2.area,
+        data2.name,
+        data2.location.latitude,
+        data2.location.longitude
+      );
+      setIsLoading(false);
+    }
+  }, [route.params]);
 
   if (isLoading) {
     return (
@@ -153,7 +160,7 @@ function ReportScreen(props) {
             style={styles.imageBtn}
             image={require("../assets/back-to.png")}
             size={45}
-            onPress={() => console.log("back pressed")}
+            onPress={() => pressGoBack()}
           ></ImageButton>
           <View style={styles.head}>
             <AppText>Report</AppText>

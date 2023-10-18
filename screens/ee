@@ -1,79 +1,24 @@
-  let logoImagePath = "data:image/png;base64....."
-
-  let report_id = "ABC-2344";
-  let name = "Bamboosa aridinarifolia";
-  let area = "23.45 cm ";
-
-  let html = `<!DOCTYPE html>
-  <html>
-  <head>
-      <meta charset="UTF-8">
-      <title>PDF Report</title>
-      <style>
-          body {
-              font-family: Arial, sans-serif;
-              margin: 20px;
-          }
-          .header {
-              text-align: center;
-              margin-bottom: 20px;
-          }
-          .logo {
-              max-width: 100px;
-          }
-          .title {
-              font-size: 20px;
-              margin-bottom: 10px;
-          }
-          .info {
-              font-size: 16px;
-              margin-bottom: 10px;
-          }
-          .data {
-              font-size: 14px;
-              margin-bottom: 5px;
-          }
-          .qr-code {
-              text-align: center;
-              margin-top: 20px;
-          }
-          .promotion {
-              font-size: 14px;
-              text-align: center;
-              margin-top: 20px;
-          }
-      </style>
-  </head>
-  <body>
-      <div class="header">
-          <img src=${logoImagePath} alt="Your App Logo" class="logo">
-          <h1 class="title">Your App Name</h1>
-      </div>
-      <div class="content">
-
-          <p class="info">Report Information:</p>
-          <p class="data"><strong>Report ID:</strong> ${report_id}</p>
-          <p class="data"><strong>Name:</strong> ${name}</p>
-          <p class="data"><strong>Area of Leaf:</strong> ${area}</p>
-          <p class="data"><strong>Longitude:</strong> ${"53.44"}</p>
-          <p class="data"><strong>Latitude:</strong> ${"78.30"}</p>
-         
-      </div>
-      <div class="qr-code">
-          <img src="../assets/qr.png" alt="QR Code" width="100">
-      </div>
-      <div class="promotion">
-          <p>Scan the QR code to learn more about our app!</p>
-      </div>
-  </body>
-  </html>
-  `;
-
-  const generatePdf = async () => {
-    const file = await printToFileAsync({
-      html: html,
-      base64: false,
-    });
-
-    await shareAsync(file.uri);
-  };
+// useEffect(() => {
+    //   setIsLoading(true);
+    //   fetchData(API_ENDPOINT);
+    // }, []);
+  
+    // const fetchData = async (url) => {
+    //   try {
+    //     const response = await fetch(url);
+    //     const json = await response.json();
+    //     setData(json.results);
+    //     setIsLoading(false);
+    //     const formattedJson = JSON.stringify(json.results, null, 2);
+    //     console.log(formattedJson);
+    //   } catch (error) {
+    //     setError(error);
+    //     console.log(error);
+    //   }
+    // };
+  
+    // const handleSearch = (query) => {
+    //   setSearchQuery(query);
+    // };
+  
+    // show indicator while data is loading

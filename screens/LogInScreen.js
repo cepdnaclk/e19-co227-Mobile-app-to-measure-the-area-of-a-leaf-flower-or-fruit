@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import LottieView from "lottie-react-native";
+import { useNavigation } from "@react-navigation/native";
+import {firebase} from '../config';
 
 import {
   View,
@@ -9,6 +11,7 @@ import {
   ImageBackground,
   TextInput,
   Image,
+  TouchableOpacity,
 } from "react-native";
 
 import Screen from "./Screen";
@@ -16,15 +19,22 @@ import AppText from "../components/AppText";
 import colors from "../config/colors";
 import AppButton from "../components/AppButton";
 import AppTextInput from "../components/AppTextInput";
+import symbolicateStackTrace from "react-native/Libraries/Core/Devtools/symbolicateStackTrace";
 
-function LogInScreen(props) {
+const LogInScreen =()=> {
+  const navigation = useNavigation();
+  const [email, setEmail] = useState('');
   const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
 
-  const printItems = (item1, item2) => {
-    console.log(item1);
-    console.log(item2);
-  };
+  loginUser = async (email, password) => {
+    try{
+      await firebase.auth().signInWithEmailAndPassword(email,password)
+    } catch (error){
+      alert(error.message)
+    }
+  }
+
 
   return (
     <Screen color={colors.color4}>
@@ -46,30 +56,28 @@ function LogInScreen(props) {
           <AppText style={styles.title}>Log In</AppText>
           <AppTextInput
             style={styles.input}
-            onChangeText={(value) => {
-              setUserName(value);
-            }}
-            placeholder="Username"
+            onChangeText={(email) => setEmail(email)}
+            autoCorrect = {false}
+            placeholder="Email"
           />
 
           <AppTextInput
             style={styles.input}
-            onChangeText={(value) => {
-              setPassword(value);
-            }}
+            onChangeText={(password) => setPassword(password)}
+            autoCorrect = {false}
             placeholder="Password"
           />
 
           <AppButton
             title="Login"
             style={styles.signBtn}
-            onPress={() => printItems(username, password)}
+            onPress={() => loginUser(email, password)}
           ></AppButton>
           <View style={styles.goToLoginContainer}>
             <AppText style={styles.goToLoginText}>
-              Don't have an account?{" "}
+              Don't have an account?
             </AppText>
-            <AppText style={styles.goToLogin}>Sign up</AppText>
+            <TouchableOpacity style={styles.goToLogin} onPress={()=> navigation.navigate("SignUpScreen")} ><Text style={{color:'#178517',textDecorationLine: "underline", fontWeight:"bold"}}> Register</Text></TouchableOpacity>
           </View>
         </View>
 

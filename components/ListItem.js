@@ -1,19 +1,21 @@
 import React from "react";
 
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
 
 import AppText from "./AppText";
 import colors from "../config/colors";
 
-function ListItem({ firstName, email, imageUrl }) {
+function ListItem({ firstName, id, imageUrl, onPress }) {
   return (
-    <View style={styles.container}>
-      <Image style={styles.image} source={{ uri: imageUrl }}></Image>
-      <View style={styles.textContainer}>
-        <AppText style={styles.title}>{firstName}</AppText>
-        <AppText style={styles.subtitle}>{email}</AppText>
+    <TouchableOpacity onPress={onPress}>
+      <View style={styles.container}>
+        <Image style={styles.image} source={{ uri: imageUrl }}></Image>
+        <View style={styles.textContainer}>
+          <AppText style={styles.title}>{firstName}</AppText>
+          <AppText style={styles.subtitle}>{id}</AppText>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
@@ -21,6 +23,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
+    paddingVertical: 10,
   },
 
   textContainer: {

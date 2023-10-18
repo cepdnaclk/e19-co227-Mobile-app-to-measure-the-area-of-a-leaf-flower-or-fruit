@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import React from "react";
+import { db } from "../config";
+import { ref, get, child } from "firebase/database";
 
 import {
   TextInput,
@@ -16,41 +18,32 @@ import AppText from "../components/AppText";
 import ListItemSeparator from "../components/ListItemSeparator";
 import ListItem from "../components/ListItem";
 
-const API_ENDPOINT = "https://randomuser.me/api/?results=30";
-
-function HistoryScreen(props) {
+function HistoryScreen({ navigation }) {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const [error, setError] = useState(null);
-  const [fullData, setFullData] = useState([]);
+  const [dataArray, setDataArray] = useState(null);
+
+  const postsRef = ref(db, "data");
 
   useEffect(() => {
-    setIsLoading(true);
-    fetchData(API_ENDPOINT);
+    get(postsRef)
+      .then((snapshot) => {
+        setDataArray(
+          Object.entries(snapshot.val()).map(([id, item]) => ({ id, ...item }))
+        );
+        setIsLoading(false);
+      })
+
+      .catch((error) => {
+        console.error("Error" + error);
+      });
   }, []);
 
-  const fetchData = async (url) => {
-    try {
-      const response = await fetch(url);
-      const json = await response.json();
-      setData(json.results);
-      setIsLoading(false);
-      const formattedJson = JSON.stringify(json.results, null, 2);
-      console.log(formattedJson);
-    } catch (error) {
-      setError(error);
-      console.log(error);
-    }
-  };
-
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-  };
-
-  // show indicator while data is loading
-
+  console.log(dataArray);
+  //console.log(fetchedData);
   if (isLoading) {
     return (
       <View style={styles.indicatorView}>
@@ -85,13 +78,19 @@ function HistoryScreen(props) {
         ></TextInput>
         <View style={styles.flatListContainer}>
           <FlatList
-            data={data}
-            keyExtractor={(item) => item.login.username}
+            data={dataArray}
+            keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <ListItem
-                firstName={item.name.first}
-                email={item.email}
-                imageUrl={item.picture.thumbnail}
+                onPress={() =>
+                  navigation.navigate("ReportScreen", {
+                    item: item,
+                  })
+                }
+                firstName={item.name}
+                id={item.id && item.id.substring(1).toUpperCase()}
+
+                // imageUrl={item.picture.\\\\\}
               ></ListItem>
             )}
             ItemSeparatorComponent={ListItemSeparator}
